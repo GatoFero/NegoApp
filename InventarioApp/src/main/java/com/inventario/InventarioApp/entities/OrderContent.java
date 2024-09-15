@@ -6,25 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Staff {
+public class OrderContent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private int quantity;
 
     @ManyToOne
-    private User user;
-    @ManyToOne
-    private Business business;
+    private Order order;
 
-    private String position;
-    private LocalDate entry;
+    @ManyToOne
+    private Product product;
 }
