@@ -5,21 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String name;
+    private String picture;
+    private Float price;
 
-    private String username;
-    private String password;
-    private String email;
-    private String numberPhone;
-    private String role;
+    @ManyToOne
+    private Category category;
+
+    @OneToMany(targetEntity = Stock.class, mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Stock> stocks;
 }

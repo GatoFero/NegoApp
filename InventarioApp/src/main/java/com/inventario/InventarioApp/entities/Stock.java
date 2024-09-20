@@ -6,20 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+import java.util.Date;
+
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private Integer quantity;
+    private Date entrance;
+    private Float offer;
+    private Date expiration;
 
-    private String username;
-    private String password;
-    private String email;
-    private String numberPhone;
-    private String role;
+    @ManyToOne
+    private Product product;
 }
