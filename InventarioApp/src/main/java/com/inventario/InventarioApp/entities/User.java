@@ -1,5 +1,6 @@
 package com.inventario.InventarioApp.entities;
 
+import com.inventario.InventarioApp.models.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,10 +17,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    private String username;
+    private String lastname;
+    private String firstname;
     private String password;
     private String email;
     private String numberPhone;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -18,9 +21,12 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Date receptionDate;
-    private Date deliveryDate;
+    private Date sendDate;
+    private LocalDateTime receptionDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Provider provider;
+
+    @OneToMany(targetEntity = OrderItem.class, mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
 }
