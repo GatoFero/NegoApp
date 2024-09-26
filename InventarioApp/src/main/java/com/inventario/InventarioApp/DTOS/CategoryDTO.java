@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCollaboratorDTO {
-    private Integer id;
-    private String lastname;
-    private String firstname;
-    private String numberPhone;
-    private String role;
+public class CategoryDTO {
+    private int id;
+    private String name;
 }

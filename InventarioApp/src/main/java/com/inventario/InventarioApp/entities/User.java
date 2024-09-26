@@ -1,6 +1,6 @@
 package com.inventario.InventarioApp.entities;
 
-import com.inventario.InventarioApp.models.Role;
+import com.inventario.InventarioApp.utiles.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

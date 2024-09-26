@@ -1,10 +1,10 @@
 package com.inventario.InventarioApp.servicies.user;
 
 import com.inventario.InventarioApp.entities.User;
-import com.inventario.InventarioApp.models.UpdateData;
+import com.inventario.InventarioApp.utiles.UpdateData;
 import com.inventario.InventarioApp.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import com.inventario.InventarioApp.models.Role;
+import com.inventario.InventarioApp.utiles.Role;
 import java.util.List;
 
 @Service
@@ -49,22 +49,22 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateEmail(Integer id, String newEmail) {
+    public User updateEmail(Integer id, User updateUser) {
         return userRepository.findById(id)
-                .filter(user -> !user.getEmail().equals(newEmail))
+                .filter(user -> !user.getEmail().equals(updateUser.getEmail()))
                 .map(user ->{
-                    user.setEmail(newEmail);
+                    user.setEmail(updateUser.getEmail());
                     return userRepository.save(user);
                 })
                 .orElse(null);
     }
 
     @Override
-    public User updatePhone(Integer id, String newPhone) {
+    public User updatePhone(Integer id, User updateUser) {
         return userRepository.findById(id)
-                .filter(user -> !user.getNumberPhone().equals(newPhone))
+                .filter(user -> !user.getNumberPhone().equals(updateUser.getNumberPhone()))
                 .map(user -> {
-                    user.setNumberPhone(newPhone);
+                    user.setNumberPhone(updateUser.getNumberPhone());
                     return userRepository.save(user);
                 })
                 .orElse(null);
@@ -84,21 +84,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateLastname(Integer id, String newLastname) {
+    public User updateLastname(Integer id, User updateUser) {
         return userRepository.findById(id)
-                .filter(user -> !user.getLastname().equals(newLastname))
+                .filter(user -> !user.getLastname().equals(updateUser.getLastname()))
                 .map(user -> {
-                    user.setLastname(newLastname);
+                    user.setLastname(updateUser.getLastname());
                     return userRepository.save(user);
                 })
                 .orElse(null);
     }
     @Override
-    public User updateFirstname(Integer id, String newFirstname) {
+    public User updateFirstname(Integer id, User updateUser) {
         return userRepository.findById(id)
-                .filter(user -> !user.getFirstname().equals(newFirstname))
+                .filter(user -> !user.getFirstname().equals(updateUser.getFirstname()))
                 .map(user -> {
-                    user.setLastname(newFirstname);
+                    user.setLastname(updateUser.getFirstname());
                     return userRepository.save(user);
                 })
                 .orElse(null);

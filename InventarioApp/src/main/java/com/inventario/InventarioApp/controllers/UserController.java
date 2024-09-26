@@ -2,13 +2,12 @@ package com.inventario.InventarioApp.controllers;
 
 import com.inventario.InventarioApp.DTOS.UserCollaboratorDTO;
 import com.inventario.InventarioApp.entities.User;
-import com.inventario.InventarioApp.models.Role;
-import com.inventario.InventarioApp.models.UpdateData;
+import com.inventario.InventarioApp.utiles.Role;
+import com.inventario.InventarioApp.utiles.UpdateData;
 import com.inventario.InventarioApp.servicies.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,53 +35,50 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-
         if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
         return ResponseEntity.ok(UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> allUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users.stream().map(user -> UserCollaboratorDTO.builder()
+        return ResponseEntity.ok(userService.getAllUsers().stream().map(user -> UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build()).collect(Collectors.toList()));
     }
 
     //Updates
     @PutMapping("/update/lastname/{id}")
-    public ResponseEntity<?> updateLastname(@PathVariable Integer id, @RequestBody String lastname) {
-        User user = userService.updateLastname(id, lastname);
+        public ResponseEntity<?> updateLastname(@PathVariable Integer id, @RequestBody User updateUser) {
+        User user = userService.updateLastname(id, updateUser);
         if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
     @PutMapping("/update/firstname/{id}")
-    public ResponseEntity<?> updateFirstname(@PathVariable Integer id, @RequestBody String firstname) {
-        User user = userService.updateFirstname(id, firstname);
+    public ResponseEntity<?> updateFirstname(@PathVariable Integer id, @RequestBody User updateUser) {
+        User user = userService.updateFirstname(id, updateUser);
         if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
     @PutMapping("/update/password/{id}")
@@ -94,31 +90,31 @@ public class UserController {
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
     @PutMapping("/update/email/{id}")
-    public ResponseEntity<?> updateEmail(@PathVariable Integer id, @RequestBody String email) {
-        User user = userService.updateEmail(id, email);
+    public ResponseEntity<?> updateEmail(@PathVariable Integer id, @RequestBody User updateUser) {
+        User user = userService.updateEmail(id, updateUser);
         if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
     @PutMapping("/update/numberPhone/{id}")
-    public ResponseEntity<?> updateNumberPhone(@PathVariable Integer id, @RequestBody String numberPhone) {
-        User user = userService.updatePhone(id, numberPhone);
+    public ResponseEntity<?> updateNumberPhone(@PathVariable Integer id, @RequestBody User updateUser) {
+        User user = userService.updatePhone(id, updateUser);
         if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(UserCollaboratorDTO.builder()
                 .id(user.getId())
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
     @PutMapping("/update/role/{id}")
@@ -130,7 +126,7 @@ public class UserController {
                 .lastname(user.getLastname())
                 .firstname(user.getFirstname())
                 .numberPhone(user.getNumberPhone())
-                .role(user.getRole().toString())
+                .role(user.getRole().getRole())
                 .build());
     }
 }
