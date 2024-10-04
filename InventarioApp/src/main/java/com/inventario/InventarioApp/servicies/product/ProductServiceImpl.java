@@ -1,14 +1,14 @@
 package com.inventario.InventarioApp.servicies.product;
 
+import com.inventario.InventarioApp.DTOS.ProductDTO;
+import com.inventario.InventarioApp.DTOS.ResourceProductDTO;
 import com.inventario.InventarioApp.entities.Category;
 import com.inventario.InventarioApp.entities.Product;
 import com.inventario.InventarioApp.repositories.inventary.CategoryRepository;
 import com.inventario.InventarioApp.repositories.inventary.ProductRepository;
 import com.inventario.InventarioApp.utiles.ManageFile;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,72 +25,48 @@ public class ProductServiceImpl implements ProductService, ManageFile {
     }
 
     @Override
-    public Product addProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Product addProduct(Product product, MultipartFile photo){
-        Product newProduct = productRepository.save(product);
-        if(newProduct.getCategory() != null){
+    public Product addProduct(ResourceProductDTO product) {
+        Product newProduct = new Product();
+        productRepository.save(newProduct);
+        setDataProduct(newProduct, product);
+        if(product.getPhoto() != null) {
             try {
-                String photoPath = getDirectoryCategoryPhoto(product, photo);
-                photo.transferTo(getDirectoryPhoto(photoPath));
-                newProduct.setPicture(photoPath);
-                productRepository.save(newProduct);
+                transferPhoto(product.getPhoto(), setPathProductPhoto(newProduct, product.getPhoto()));
             } catch (IOException e) {
-                throw new RuntimeException("Error al guardar la imagen.", e);
+                throw new RuntimeException(e);
             }
         }
-        return newProduct;
+        return productRepository.save(newProduct);
     }
 
     @Override
-    public Product updateProductName(int id, String name) {
-        return productRepository.findById(id)
+    public Product updateProduct(ResourceProductDTO productDTO){
+        return productRepository.findById(productDTO.getId())
                 .map(product -> {
-                    product.setName(name);
+                    setDataProduct(product, productDTO);
+                    if(productDTO.getPhoto() != null){
+                        try {
+                            String photoPath = setPathProductPhoto(product, productDTO.getPhoto());
+                            deletePhoto(photoPath);
+                            transferPhoto(productDTO.getPhoto(), photoPath);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     return productRepository.save(product);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado."));
     }
 
     @Override
-    public Product updateProductPrice(int id, float price){
-        return productRepository.findById(id)
-                .map(product -> {
-                    product.setPrice(price);
-                    return productRepository.save(product);
-                })
-                .orElse(null);
-    }
-
-    @Override
-    public Product updatePhotoProduct(int id, MultipartFile newPhoto){
-        Product product = productRepository.findById(id).orElse(null);
-        if(product != null){
-            File file = new File(product.getPicture());
-            if(file.exists() && !file.delete()) throw new RuntimeException("Error al eliminar la imagen.");
-            try {
-                String photoPath = getDirectoryCategoryPhoto(product, newPhoto);
-                newPhoto.transferTo(getDirectoryPhoto(photoPath));
-                product.setPicture(photoPath);
-                return productRepository.save(product);
-            } catch (IOException e) {
-                throw new RuntimeException("Error al guardar la imagen.", e);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void deleteProduct(Product product) {
-        productRepository.delete(product);
+    public void deleteProduct(int id) {
+        productRepository.delete(getProductById(id));
     }
 
     @Override
     public Product getProductById(int id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado."));
     }
 
     @Override
@@ -100,9 +76,32 @@ public class ProductServiceImpl implements ProductService, ManageFile {
 
     @Override
     public List<Product> getProductsByCategory(int idCategory) {
-        Category category = categoryRepository.getReferenceById(idCategory);
-        return productRepository.findAll().stream()
-                .filter(product -> product.getCategory().getId().equals(category.getId()))
-                .collect(Collectors.toList());
+        if (!categoryRepository.existsById(idCategory)) {
+            throw new EntityNotFoundException("Categoría no encontrada");
+        }
+        return productRepository.findByCategoryId(idCategory);
+    }
+
+    @Override
+    public void setDataProduct(Product product, ResourceProductDTO productDTO){
+        if(productDTO.getName() != null) product.setName(productDTO.getName());
+        if(productDTO.getPrice() != null) product.setPrice(productDTO.getPrice());
+        if(productDTO.getIdCategory() != null) product.setCategory(categoryRepository.getReferenceById(productDTO.getIdCategory()));
+    }
+
+    @Override
+    public String getProductURL(Product product){
+        return product.getPicture() != null? "http://localhost:8080/product/photo/" + product.getId() : null;
+    }
+
+    @Override
+    public ProductDTO createProductDTO(Product product){
+        return ProductDTO.builder()
+                .id(product.getId())
+                .name(product.getName() != null? product.getName() : null)
+                .price(product.getPrice() != null? product.getPrice() : null)
+                .category(product.getCategory() != null? product.getCategory().getName() : null)
+                .picture(getProductURL(product))
+                .build();
     }
 }

@@ -2,7 +2,7 @@ package com.inventario.InventarioApp.controllers;
 
 import com.inventario.InventarioApp.DTOS.UserCollaboratorDTO;
 import com.inventario.InventarioApp.entities.User;
-import com.inventario.InventarioApp.utiles.Role;
+import com.inventario.InventarioApp.models.Role;
 import com.inventario.InventarioApp.utiles.UpdateData;
 import com.inventario.InventarioApp.servicies.user.UserService;
 import org.springframework.http.HttpStatus;

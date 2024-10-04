@@ -4,7 +4,7 @@ import com.inventario.InventarioApp.entities.User;
 import com.inventario.InventarioApp.utiles.UpdateData;
 import com.inventario.InventarioApp.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import com.inventario.InventarioApp.utiles.Role;
+import com.inventario.InventarioApp.models.Role;
 import java.util.List;
 
 @Service

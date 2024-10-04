@@ -1,4 +1,4 @@
-package com.inventario.InventarioApp.utiles;
+package com.inventario.InventarioApp.models;
 
 import lombok.Getter;
 import lombok.ToString;

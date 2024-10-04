@@ -19,23 +19,30 @@ public class CategoryServiceImpl implements CategoryService, ManageFile {
     @Override
     public Category createCategory(Category category) {
         Category newCategory = categoryRepository.save(category);
-        File categoryFile = new File(getCategoryPath(newCategory.getName()));
+        File categoryFile = new File(getPathFile("products" + File.separator + "categories" +
+                File.separator + newCategory.getName()));
         if (!categoryFile.exists()) {
             if (!categoryFile.mkdirs()) throw new RuntimeException("No se creo el directorio " + category.getName());
         } else System.out.println("El directorio ya existe.");
-        return newCategory;
+        return null;
     }
 
     @Override
-    public Category updateCategory(Integer id, String name) {
-        return categoryRepository.findById(id)
-                .map(category -> {
-                    if (! new File(getCategoryPath(category.getName())).renameTo(new File(getCategoryPath(name))))
-                        throw new RuntimeException("No se actualizar el directorio " + category.getName());
-                    category.setName(name);
-                    return categoryRepository.save(category);
+    public Category updateCategory(Category category) {
+        return categoryRepository.findById(category.getId())
+                .map(element -> {
+                    String categoryFile = getCategoryDirectory(element.getName());
+                    element.setName(category.getName());
+                    if (! new File(categoryFile).renameTo(new File(getCategoryDirectory(element.getName()))))
+                        throw new RuntimeException("No se actualizar el directorio " + element.getName());
+                    return categoryRepository.save(element);
                 })
                 .orElse(null);
+    }
+
+    private String getCategoryDirectory(String category){
+        return getPathFile("products" + File.separator + "categories" +
+                File.separator + category);
     }
 
     @Override
@@ -47,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService, ManageFile {
     public void deleteCategoryById(int id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category != null) {
-            if(! new File(getCategoryPath(category.getName())).delete())
+            if(! new File(getCategoryDirectory(category.getName())).delete())
                 throw new RuntimeException("No se elimino el directorio " + category.getName());
             else categoryRepository.findById(id).ifPresent(categoryRepository::delete);
         }

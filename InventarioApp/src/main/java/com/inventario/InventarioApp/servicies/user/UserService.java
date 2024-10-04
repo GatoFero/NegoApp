@@ -2,7 +2,7 @@ package com.inventario.InventarioApp.servicies.user;
 
 
 import com.inventario.InventarioApp.entities.User;
-import com.inventario.InventarioApp.utiles.Role;
+import com.inventario.InventarioApp.models.Role;
 import com.inventario.InventarioApp.utiles.UpdateData;
 import java.util.List;
 
